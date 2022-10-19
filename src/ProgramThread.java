@@ -1,8 +1,7 @@
 import java.util.ArrayList;
 import java.util.concurrent.FutureTask;
 
-public class Program {
-
+public class ProgramThread {
     public static void main(String[] args) throws Exception {
         if (args.length == 0) {
             System.out.println("Введите путь к файлу wav");
@@ -28,16 +27,7 @@ public class Program {
         // 2 -> [-56, 12000]
         // 3 -> [123, ]
 
-        var tasksParams = new ArrayList<ArrayList<Long>>();
-
-        for (int i = 0; i < THREAD_COUNT; i++) {
-            tasksParams.add(new ArrayList());
-        }
-
-        for (int i = 0; i < decodedData.length; i++) {
-            var threadIndex = i % THREAD_COUNT; // в какой поток положить decodedData[i]
-            tasksParams.get(threadIndex).add(decodedData[i]);
-        }
+        var tasksParams = ArrayChunker.GetChunks(decodedData, THREAD_COUNT);
 
         var futureTasks = new ArrayList<FutureTask<GreatAndLessOrEqualCount>>();
         for (int i = 0; i < THREAD_COUNT; i++)
